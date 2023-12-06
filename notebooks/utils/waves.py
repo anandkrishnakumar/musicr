@@ -1,25 +1,96 @@
 import numpy as np
 
-# Generate sine wave
+class WaveGenerator:
+    """
+    A class for generating sequences of waveforms.
 
+    Attributes:
+    - sr (int): The sample rate.
+    - waveform_functions (dict): A dictionary of supported waveform functions.
 
-def gen_sine(freq, sr, secs, noise_sd=0, amplitude=0.5, x_intercept=0):
-    num = int(sr*secs)
-    out = np.zeros((num, 2))
-    out[:, 0] = np.sin(2 * np.pi * np.arange(num) *
-                       freq / sr + x_intercept) * amplitude
-    out[:, 1] = np.sin(2 * np.pi * np.arange(num) *
-                       freq / sr + x_intercept) * amplitude
+    Methods:
+    - gen_wave(waveform_name, freq, secs, noise_sd=0, amplitude=0.5, x_intercept=0):
+        Generates a waveform using the specified waveform function.
 
-    # Add noise
-    out += np.random.normal(0, noise_sd, size=(num, 2))
+    - gen_sequence(waveform_name, freqs, secs, amplitude=1, x_intercept=0):
+        Generates a sequence of waveforms with different frequencies and durations.
 
-    return out
+    Example Usage:
+    --------------
+    # Create an instance of the WaveGenerator class
+    wave_gen = WaveGenerator(sr=48000)
 
+    # Generate a sequence of sine waves with different frequencies and durations
+    freqs = [440, 880, 1320]
+    durations = [1, 2, 3]
+    generated_sequence = wave_gen.gen_sequence('sine', freqs, durations)
 
-def gen_sequence(freqs, secs, wave_gen_fn=gen_sine, sr=48000, amplitude=1, x_intercept=0):
-    out_lst = []
-    for freq, sec in zip(freqs, secs):
-        sine = wave_gen_fn(freq, sr, sec, amplitude=amplitude, x_intercept=x_intercept)
-        out_lst.append(sine)
-    return np.concatenate(out_lst)
+    # Print or use the generated sequence as needed
+    print(generated_sequence)
+    """
+
+    def __init__(self, sr=48000):
+        """
+        Initialize the WaveGenerator.
+
+        Parameters:
+        - sr (int): The sample rate.
+        """
+        self.sr = sr
+        self.waveform_functions = {
+            'sine': self._sine_wave
+            # Add more waveform functions as needed
+        }
+
+    def _sine_wave(self, time, freq, amplitude, x_intercept):
+        return np.sin(2 * np.pi * time * freq + x_intercept) * amplitude
+
+    def gen_wave(self, waveform_name, freq, secs, noise_sd=0, amplitude=1, x_intercept=0):
+        """
+        Generates a waveform using the specified waveform function.
+
+        Parameters:
+        - waveform_name (str): Name of the waveform function.
+        - freq (float): The frequency of the waveform.
+        - secs (float): The duration of the waveform in seconds.
+        - noise_sd (float): Standard deviation of noise to be added (default is 0).
+        - amplitude (float): Amplitude of the waveform (default is 0.5).
+        - x_intercept (float): Phase shift of the waveform (default is 0).
+
+        Returns:
+        - out (numpy.ndarray): The generated waveform.
+        """
+        if waveform_name not in self.waveform_functions:
+            raise ValueError(f"Waveform function '{waveform_name}' not supported.")
+
+        waveform_fn = self.waveform_functions[waveform_name]
+        num = int(self.sr * secs)
+        out = np.zeros((num, 2))
+        time = np.arange(num) / self.sr
+        out[:, 0] = waveform_fn(time, freq, amplitude, x_intercept)
+        out[:, 1] = waveform_fn(time, freq, amplitude, x_intercept)
+
+        # Add noise
+        out += np.random.normal(0, noise_sd, size=(num, 2))
+
+        return out
+
+    def gen_sequence(self, waveform_name, freqs, secs, amplitude=1, x_intercept=0):
+        """
+        Generates a sequence of waveforms with different frequencies and durations.
+
+        Parameters:
+        - waveform_name (str): Name of the waveform function.
+        - freqs (list): List of frequencies for each waveform.
+        - secs (list): List of durations (in seconds) for each waveform.
+        - amplitude (float): Amplitude of the waveforms (default is 1).
+        - x_intercept (float): Phase shift of the waveforms (default is 0).
+
+        Returns:
+        - generated_sequence (numpy.ndarray): The concatenated sequence of generated waveforms.
+        """
+        out_lst = []
+        for freq, sec in zip(freqs, secs):
+            wave = self.gen_wave(waveform_name, freq, sec, amplitude=amplitude, x_intercept=x_intercept)
+            out_lst.append(wave)
+        return np.concatenate(out_lst)
