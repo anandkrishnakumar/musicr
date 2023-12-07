@@ -9,7 +9,7 @@ os.environ["KERAS_BACKEND"] = "jax"
 import keras
 from keras import Sequential
 from keras.layers import Dense
-keras.utils.set_random_seed(777)
+# keras.utils.set_random_seed(777)
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -35,12 +35,12 @@ def generate_data(N, secs=1/32):
         X_lst.append(sine)
 
     X = np.stack(X_lst)
-    y = freqs
+    y = np.stack([freqs,amplitudes]).T
     split = 0.7
     X_train = X[:int(split*len(X_lst))]
-    y_train = freqs[:int(split*len(X_lst))]
+    y_train = y[:int(split*len(X_lst))]
     X_test = X[int(split*len(X_lst)):]
-    y_test = freqs[int(split*len(X_lst)):]
+    y_test = y[int(split*len(X_lst)):]
     
     return X, y, X_train, y_train, X_test, y_test
 
@@ -125,7 +125,7 @@ def create_nn2(input_shape):
     model.add(Dense(200, kernel_initializer='normal', activation='relu'))
     model.add(Dense(300, kernel_initializer='normal', activation='relu'))
     model.add(Dense(500, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(1, kernel_initializer='normal'))
+    model.add(Dense(2, kernel_initializer='normal'))
     # Compile model
     model.compile(loss='mean_absolute_percentage_error', optimizer='adam')
     
