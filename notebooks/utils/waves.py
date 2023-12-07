@@ -75,7 +75,7 @@ class WaveGenerator:
 
         return out
 
-    def gen_sequence(self, waveform_name, freqs, secs, amplitude=1, x_intercept=0):
+    def gen_sequence(self, waveform_name, freqs, secs, noise_sd=0, amplitude=1, x_intercept=0):
         """
         Generates a sequence of waveforms with different frequencies and durations.
 
@@ -83,6 +83,7 @@ class WaveGenerator:
         - waveform_name (str): Name of the waveform function.
         - freqs (list): List of frequencies for each waveform.
         - secs (list): List of durations (in seconds) for each waveform.
+        - noise_sd (float): Standard deviation of noise to be added (default is 0).
         - amplitude (float): Amplitude of the waveforms (default is 1).
         - x_intercept (float): Phase shift of the waveforms (default is 0).
 
@@ -91,6 +92,6 @@ class WaveGenerator:
         """
         out_lst = []
         for freq, sec in zip(freqs, secs):
-            wave = self.gen_wave(waveform_name, freq, sec, amplitude=amplitude, x_intercept=x_intercept)
+            wave = self.gen_wave(waveform_name, freq, sec, noise_sd=noise_sd, amplitude=amplitude, x_intercept=x_intercept)
             out_lst.append(wave)
         return np.concatenate(out_lst)
