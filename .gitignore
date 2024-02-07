@@ -2,3 +2,5 @@
 *.pyc
 *.h5
 *.mp3
+*.gz
+*.crdownload
