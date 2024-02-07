@@ -117,17 +117,17 @@ def create_nn(input_shape):
 
     return model
 
-def create_nn2(input_shape):
+def create_nn2(input_shape, loss = 'mean_absolute_percentage_error'):
     # Build network
     model = keras.Sequential()
     model.add(Dense(100, input_shape=(input_shape,), kernel_initializer='normal', activation='relu'))
     model.add(Dense(100, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(200, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(300, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(500, kernel_initializer='normal', activation='relu'))
+    #model.add(Dense(500, kernel_initializer='normal', activation='relu'))
+    #model.add(Dense(500, kernel_initializer='normal', activation='relu'))
+    #model.add(Dense(500, kernel_initializer='normal', activation='relu'))
     model.add(Dense(2, kernel_initializer='normal'))
     # Compile model
-    model.compile(loss='mean_absolute_percentage_error', optimizer='adam')
+    model.compile(loss=loss, optimizer='adam')
     
     # Display a summary of the model architecture.
     model.summary()
