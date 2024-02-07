@@ -52,8 +52,6 @@ class WaveGenerator:
         p = 1/freq
         return 2 * (time/p - np.floor(1/2 + time/p))
 
-    def gen_wave(self, waveform_name, freq, secs, noise_sd=0, amplitude=1, x_intercept=0, channels=1):
-    
     def _saw_wave(self, time, freq, amplitude, x_intercept):
         p = 1/freq
         return 2 * (time/p - np.floor(1/2 + time/p))
@@ -92,10 +90,6 @@ class WaveGenerator:
         out += np.random.normal(0, noise_sd, size=(num, channels))
         out += np.random.normal(0, noise_sd, size=(num, channels))
 
-        if channels == 1:
-            return out[:, 0]
-        else:
-            return out
         if channels == 1:
             return out[:, 0]
         else:
