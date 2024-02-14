@@ -4,3 +4,8 @@
 *.mp3
 *.gz
 *.crdownload
+*.wav
+./pipeline/landing
+1-s2.0-S1877050922011966-main.pdf
+**/*.DS_Store
+pipeline/landing/nsynth-test/examples.json
